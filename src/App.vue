@@ -1,4 +1,18 @@
 <template>
+  <Layout>
+    <template v-slot:header>
+      En tête
+    </template>
+    <template v-slot:aside>
+      Sidebar
+    </template>
+    <template v-slot:main>
+      Main
+    </template>
+    <template v-slot:footer>
+      Footer
+    </template>
+  </Layout>
   <p>Compteur : {{ count }}</p>
   <button @click="increment">Incrémenter</button>
   <div v-if="count >= 5">Bravo vous avez cliqué plus de 5 fois !!</div>
@@ -29,10 +43,17 @@
     <input type="text" placeholder="Ajouter tâche" v-model="todoName">
     <button>Ajouter</button>
   </form>
+  <hr>
+  <Checkbox label="event child to parent" 
+    @check="console.log('check')"
+    @uncheck="console.log('uncheck')"
+  />
 </template>
 
 <script setup>
   import {ref} from 'vue'
+  import Checkbox from './Checkbox.vue'
+  import Layout from './Layout.vue';
   const count = ref(0)
   const movieName = ref('')
   const todoName = ref('')
