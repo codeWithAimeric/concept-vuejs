@@ -1,4 +1,5 @@
 <template>
+  <Timer />
   <Layout>
     <template v-slot:header>
       En tête
@@ -51,14 +52,20 @@
 </template>
 
 <script setup>
-  import {ref} from 'vue'
+  import {ref, onMounted} from 'vue'
   import Checkbox from './Checkbox.vue'
   import Layout from './Layout.vue';
+  import Timer from './Timer.vue';
   const count = ref(0)
   const movieName = ref('')
   const todoName = ref('')
   const hideCompleted = ref(false)
   const todos = ref([])
+  onMounted(() => {
+    fetch('https://jsonplaceholder.typicode.com/todos')
+    .then(r => r.json())
+    .then(v => todos.value = v.map(todo => ({...todo, date: todo.id})))
+  })
   const increment = () => {
     count.value++
   }
