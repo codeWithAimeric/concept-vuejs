@@ -1,19 +1,37 @@
 <template>
-  <input type="text" v-model="page.title">
-  Temps écoulé : {{ time }}
-  <button @click="reset">Reset</button>
+  <div v-if="state === 'error'">
+    <p>
+      Impossible de charger le quiz
+    </p>
+  </div>
+  <div :aria-busy="state === 'loading'">
+    <Quiz :quiz="quiz"  v-if="state === 'ready'" />
+  </div>
 </template>
 
 <script setup>
-  import {ref, watchEffect} from 'vue'
-  import { useTimer } from './composable/useTimer'
+  import {onMounted, ref} from 'vue'
+  import Quiz from './components/Quiz.vue';
 
-  const {time, reset} = useTimer()
-  const page = ref({
-    title: ''
-  })
-  watchEffect(() => {
-    document.title = page.value.title
+  const quiz = ref(null)
+  const state = ref('loading')
+
+  onMounted(() => {
+    fetch('/quiz.json')
+    .then(r => {
+      if(r.ok){
+        return r.json()
+      }
+      throw new Error('Impossible de récupérer le json')
+    })
+    .then(data => {
+      quiz.value = data
+      state.value = 'ready'
+    })
+    .catch(e => {
+      state.value = 'Impossible de charger le quiz'
+      state.value = 'error'
+    })
   })
 </script>
 
